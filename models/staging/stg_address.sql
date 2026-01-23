@@ -10,7 +10,7 @@ WITH address_raw AS (
         raw_payload:project_identifier::INT     AS project_identifier,
         raw_payload:entity_identifier::INT      AS entity_identifier
 
-    FROM realestate.raw.raw_events
+    FROM {{ source("raw_real_estate_data", "raw_events") }}
 )
 
 SELECT *

@@ -1,0 +1,8 @@
+version: 2
+
+sources:
+  - name: raw_real_estate_data
+    database: realestate
+    schema: raw
+    tables:
+      - name: raw_events

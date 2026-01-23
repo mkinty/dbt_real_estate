@@ -11,7 +11,7 @@ WITH projects_raw AS (
         raw_payload:event_timestamp::TIMESTAMP  AS event_timestamp,
         raw_payload:phase::STRING               AS phase
 
-    FROM realestate.raw.raw_events
+    FROM {{ source('raw_real_estate_data', 'raw_events') }}
 )
 
 SELECT *

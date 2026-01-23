@@ -8,7 +8,7 @@ WITH investors_raw AS (
         raw_payload:project_identifier::INT AS project_identifier,
         raw_payload:entity_identifier::INT  AS entity_identifier
 
-    FROM realestate.raw.raw_events,
+    FROM {{ source('raw_real_estate_data', 'raw_events') }},
     -- investors est un ARRAY d’objets, En Snowflake, il faut exploser le tableau avec LATERAL FLATTEN
          LATERAL FLATTEN(
              input => raw_payload:investors, 
