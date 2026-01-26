@@ -94,6 +94,12 @@ models:
         description: Investisement de l'investisseur 
         tests:
           - not_null
+      - name: is_active
+        description: Indicateur si l'investisseur est actif
+        tests:
+          - not_null
+          - accepted_values:
+              values: [TRUE, FALSE]
       - name: project_identifier
         description: Identifiant du projet, doit référencer la colonne project_identifier dans stg_projects
         tests:
