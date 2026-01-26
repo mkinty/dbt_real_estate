@@ -1,4 +1,4 @@
-{% snapshot address_snapshot %}
+{% snapshot snap_address %}
 
 {{
     config(

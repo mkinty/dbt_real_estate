@@ -1,4 +1,4 @@
-{% snapshot investors_snapshot %}
+{% snapshot snap_investors %}
 
 {{
     config(

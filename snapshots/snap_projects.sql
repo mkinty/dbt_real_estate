@@ -1,4 +1,4 @@
-{% snapshot projects_snapshot %}
+{% snapshot snap_projects %}
 
 {{
     config(
