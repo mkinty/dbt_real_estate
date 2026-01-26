@@ -1,0 +1,114 @@
+version: 2
+
+models:
+  - name: stg_projects
+    description: Table stg_projects nettoyée et formatée
+    columns:
+      - name: project_identifier
+        description: Identifiant unique de projet
+        tests:
+          - unique
+          - not_null
+      - name: entity_identifier
+        description: Identifiant de l'entité
+        tests:
+          - not_null
+      - name: project_name
+        description: Nom du projet
+        tests:
+          - not_null
+      - name: project_start
+        description: Date de debut du projet
+        tests:
+          - not_null
+      - name: is_active
+        description: Indicateur si le projet est actif
+        tests:
+          - not_null
+          - accepted_values:
+              values: [TRUE, FALSE]
+      - name: phase
+        description: Phase du projet
+        tests:
+          - not_null
+      - name: event_timestamp
+        description: Date de mise à jour du projet
+        tests:
+          - not_null
+
+  - name: stg_address
+    description: Table stg_address nettoyée et formatée
+    columns:
+      - name: address_id
+        description: Identifiant unique de l'adresse
+        tests:
+          - unique
+          - not_null
+      - name: project_identifier
+        description: Identifiant du projet, doit référencer la colonne project_identifier dans stg_projects
+        tests:
+          - not_null
+          - relationships:
+              field: project_identifier
+              to: ref('stg_projects')
+      - name: entity_identifier
+        description: Identifiant de l'entité, doit référencer la colonne entity_identifier dans stg_projects
+        tests:
+          - not_null
+          - relationships:
+              field: entity_identifier
+              to: ref('stg_projects')
+      - name: address_line1
+        description: Première ligne de l'dresse 
+        tests:
+          - not_null
+      - name: address_line2
+        description: Deuxième ligne de l'dresse 
+        tests:
+          - not_null
+      - name: address_city
+        description: Ville de l'adresse
+        tests:
+          - not_null
+      - name: address_country
+        description: Pays de l'adresse
+        tests:
+          - not_null
+      - name: event_timestamp
+        description: Date de mise à jour du projet
+        tests:
+          - not_null
+
+  - name: stg_investors
+    description: Table stg_investors nettoyée et formatée
+    columns:
+      - name: investor_identifier
+        description: Identifiant de l'investisseur
+        tests:
+          - not_null
+      - name: investor_name
+        description: Nom de l'investisseur
+        tests:
+          - not_null
+      - name: invested
+        description: Investisement de l'investisseur 
+        tests:
+          - not_null
+      - name: project_identifier
+        description: Identifiant du projet, doit référencer la colonne project_identifier dans stg_projects
+        tests:
+          - not_null
+          - relationships:
+              field: project_identifier
+              to: ref('stg_projects')
+      - name: entity_identifier
+        description: Identifiant de l'entité, doit référencer la colonne entity_identifier dans stg_projects
+        tests:
+          - not_null
+          - relationships:
+              field: entity_identifier
+              to: ref('stg_projects')
+      - name: event_timestamp
+        description: Date de mise à jour du projet
+        tests:
+          - not_null
