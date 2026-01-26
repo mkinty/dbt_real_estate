@@ -27,6 +27,15 @@ SELECT
     project_start,
     is_active,
     phase,
-    event_timestamp
+    event_timestamp,
+
+    -- Hash des colonnes importantes pour SCD2
+    {{ dbt_utils.generate_surrogate_key([
+        'project_name',
+        'project_start',
+        'is_active',
+        'phase'
+    ]) }} AS hash_value
+    
 FROM projects_raw
 WHERE rn = 1

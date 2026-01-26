@@ -22,7 +22,19 @@ WITH address_raw AS (
 )
 
 SELECT
-    project_identifier AS address_id,
+    -- Génération d'un address_id unique de type INT (unique_key basé sur project + entity + hash des champs de l'adresse)
+    TO_NUMBER(
+        ABS(HASH(
+            CONCAT(
+                project_identifier::STRING,
+                entity_identifier::STRING,
+                address_line1,
+                address_line2,
+                address_city,
+                address_country
+            )
+        ))
+    ) AS address_id,
     
     project_identifier,
     entity_identifier,
@@ -31,7 +43,15 @@ SELECT
     address_line2,
     address_city,
     address_country,
+    event_timestamp,
 
-    event_timestamp
+    -- Hash des colonnes importantes pour SCD2
+    {{ dbt_utils.generate_surrogate_key([
+        'address_line1',
+        'address_line2',
+        'address_city',
+        'address_country'
+    ]) }} AS hash_value
+
 FROM address_raw
 WHERE rn = 1

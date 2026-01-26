@@ -10,12 +10,14 @@ WITH investors_raw AS (
         investor_identifier,
         investor_name,
         invested,
+        is_active,
         project_identifier,
         entity_identifier,
         event_timestamp
 
     FROM {{ ref('snap_investors') }}
     WHERE DBT_VALID_TO IS NULL
+    AND is_active = TRUE
         
 )
 
