@@ -6,3 +6,11 @@ sources:
     schema: raw
     tables:
       - name: raw_events
+        columns:
+          - name: raw_payload
+            description: "Donnees brutes au format json"
+            tests:
+              - not_null
+              - dbt_expectations.expect_column_values_to_be_of_type:
+                  arguments:
+                    column_type: VARIANT
