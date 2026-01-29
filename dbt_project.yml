@@ -39,4 +39,5 @@ models:
 
 vars:
   analyse_real_estate:
-    curation_schema: curation_dev
+    cur_schema: curation
+    cur_materialized: table

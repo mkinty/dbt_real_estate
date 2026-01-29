@@ -1,6 +1,7 @@
 {{
     config(
-        schema=var("curation_schema", "curation")
+        schema=var("cur_schema"),
+        materialized=var("cur_materialized")
     )
 }}
 

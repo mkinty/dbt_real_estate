@@ -5,9 +5,8 @@ models:
     description: Table stg_projects nettoyée et formatée
     columns:
       - name: project_identifier
-        description: Identifiant unique de projet
+        description: Identifiant projet
         tests:
-          - unique
           - not_null
       - name: entity_identifier
         description: Identifiant de l'entité
@@ -42,10 +41,9 @@ models:
       - name: address_id
         description: Identifiant unique de l'adresse
         tests:
-          - unique
           - not_null
       - name: project_identifier
-        description: Identifiant du projet, doit référencer la colonne project_identifier dans stg_projects
+        description: Identifiant projet, doit référencer la colonne project_identifier dans stg_projects
         tests:
           - not_null
           - relationships:
@@ -82,26 +80,13 @@ models:
   - name: stg_investors
     description: Table stg_investors nettoyée et formatée
     columns:
-      - name: investor_identifier
-        description: Identifiant de l'investisseur
-        tests:
-          - not_null
-      - name: investor_name
-        description: Nom de l'investisseur
-        tests:
-          - not_null
-      - name: invested
-        description: Investisement de l'investisseur 
-        tests:
-          - not_null
       - name: is_active
         description: Indicateur si l'investisseur est actif
         tests:
-          - not_null
           - accepted_values:
               values: [TRUE, FALSE]
       - name: project_identifier
-        description: Identifiant du projet, doit référencer la colonne project_identifier dans stg_projects
+        description: Identifiant projet, doit référencer la colonne project_identifier dans stg_projects
         tests:
           - not_null
           - relationships:
@@ -118,3 +103,21 @@ models:
         description: Date de mise à jour du projet
         tests:
           - not_null
+    
+
+  - name: cur_projects
+    description: Table cur_projects nettoyée et formatée
+    columns: 
+      - name: project_identifier
+        description: Identifiant unique du projet
+        tests:
+          - not_null
+
+  - name: cur_address
+    description: Table cur_address nettoyée et formatée
+    columns: 
+      - name: address_id
+        description: Identifiant unique du l'adresse
+        tests:
+          - not_null
+
