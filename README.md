@@ -2,7 +2,7 @@
 
 ## Objectif
 
-Ce projet a pour objectif de transformer des données JSON issues d’un système de streaming événementiel d’une entreprise d’investissement immobilier en tables relationnelles historisées selon le modèle **SCD Type 2**.
+Ce projet a pour objectif de transformer des données JSON issues d’un système de streaming événementiel d’une entreprise d’investissement immobilier en tables relationnelles historisées selon le modèle **SCD Type 2.**
 
 Les données représentent des *snapshots complets* de l’état d’un projet immobilier à un instant donné.
 
