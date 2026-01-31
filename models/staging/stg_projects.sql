@@ -12,7 +12,21 @@ WITH projects_raw AS (
 
     FROM {{ source('raw_real_estate_data', 'raw_events') }}
 )
-
 SELECT
-    *
+    *,
+    
+    event_timestamp AS valid_from,
+    LEAD(event_timestamp) OVER (
+        PARTITION BY project_identifier, entity_identifier
+        ORDER BY event_timestamp
+    ) AS valid_to,
+
+    CASE
+        WHEN LEAD(event_timestamp) OVER (
+            PARTITION BY project_identifier, entity_identifier
+            ORDER BY event_timestamp
+        ) IS NULL THEN TRUE
+        ELSE FALSE
+    END AS is_current
+    
 FROM projects_raw

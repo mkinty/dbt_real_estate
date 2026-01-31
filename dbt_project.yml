@@ -36,8 +36,9 @@ models:
       +materialized: table
       +schema: staging
 
+      
 
-vars:
-  analyse_real_estate:
-    cur_schema: curation
-    cur_materialized: table
+# vars:
+#   analyse_real_estate:
+#     stg_schema: staging
+#     stg_materialized: table

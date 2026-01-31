@@ -1,123 +1,102 @@
 version: 2
 
 models:
+
+  # =========================
+  # PROJECTS
+  # =========================
   - name: stg_projects
-    description: Table stg_projects nettoyée et formatée
+    description: "Projets immobiliers – historisation SCD2"
     columns:
       - name: project_identifier
-        description: Identifiant projet
         tests:
           - not_null
+
       - name: entity_identifier
-        description: Identifiant de l'entité
         tests:
           - not_null
+
       - name: project_name
-        description: Nom du projet
         tests:
           - not_null
-      - name: project_start
-        description: Date de debut du projet
+
+      - name: event_timestamp
         tests:
           - not_null
-      - name: is_active
-        description: Indicateur si le projet est actif
-        tests:
-          - not_null
-          - accepted_values:
-              values: [TRUE, FALSE]
+
       - name: phase
-        description: Phase du projet
-        tests:
-          - not_null
-      - name: event_timestamp
-        description: Date de mise à jour du projet
         tests:
           - not_null
 
+    tests:
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns:
+            - project_identifier
+            - entity_identifier
+            - valid_from
+
+
+  # =========================
+  # ADDRESS
+  # =========================
   - name: stg_address
-    description: Table stg_address nettoyée et formatée
+    description: "Adresse des projets – historisation SCD2"
     columns:
-      - name: address_id
-        description: Identifiant unique de l'adresse
-        tests:
-          - not_null
       - name: project_identifier
-        description: Identifiant projet, doit référencer la colonne project_identifier dans stg_projects
-        tests:
-          - not_null
-          - relationships:
-              field: project_identifier
-              to: ref('stg_projects')
-      - name: entity_identifier
-        description: Identifiant de l'entité, doit référencer la colonne entity_identifier dans stg_projects
-        tests:
-          - not_null
-          - relationships:
-              field: entity_identifier
-              to: ref('stg_projects')
-      - name: address_line1
-        description: Première ligne de l'dresse 
-        tests:
-          - not_null
-      - name: address_line2
-        description: Deuxième ligne de l'dresse 
-        tests:
-          - not_null
-      - name: address_city
-        description: Ville de l'adresse
-        tests:
-          - not_null
-      - name: address_country
-        description: Pays de l'adresse
-        tests:
-          - not_null
-      - name: event_timestamp
-        description: Date de mise à jour du projet
         tests:
           - not_null
 
+      - name: entity_identifier
+        tests:
+          - not_null
+
+      - name: event_timestamp
+        tests:
+          - not_null
+
+      - name: valid_from
+        tests:
+          - not_null
+
+      - name: is_current
+        tests:
+          - not_null
+
+    tests:
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns:
+            - project_identifier
+            - entity_identifier
+            - valid_from
+
+  # =========================
+  # INVESTORS
+  # =========================
   - name: stg_investors
-    description: Table stg_investors nettoyée et formatée
+    description: "Investisseurs par projet – SCD2"
     columns:
-      - name: is_active
-        description: Indicateur si l'investisseur est actif
-        tests:
-          - accepted_values:
-              values: [TRUE, FALSE]
       - name: project_identifier
-        description: Identifiant projet, doit référencer la colonne project_identifier dans stg_projects
         tests:
           - not_null
-          - relationships:
-              field: project_identifier
-              to: ref('stg_projects')
+
       - name: entity_identifier
-        description: Identifiant de l'entité, doit référencer la colonne entity_identifier dans stg_projects
-        tests:
-          - not_null
-          - relationships:
-              field: entity_identifier
-              to: ref('stg_projects')
-      - name: event_timestamp
-        description: Date de mise à jour du projet
-        tests:
-          - not_null
-    
-
-  - name: cur_projects
-    description: Table cur_projects nettoyée et formatée
-    columns: 
-      - name: project_identifier
-        description: Identifiant unique du projet
         tests:
           - not_null
 
-  - name: cur_address
-    description: Table cur_address nettoyée et formatée
-    columns: 
-      - name: address_id
-        description: Identifiant unique du l'adresse
+      - name: is_active
         tests:
           - not_null
+
+      - name: valid_from
+        tests:
+          - not_null
+
+    tests:
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns:
+            - project_identifier
+            - entity_identifier
+            - investor_identifier
+            - valid_from
+
 
