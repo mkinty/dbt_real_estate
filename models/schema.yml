@@ -6,7 +6,7 @@ models:
   # PROJECTS
   # =========================
   - name: stg_projects
-    description: "Projets immobiliers – historisation SCD2"
+    description: "Projets immobiliers - historisation SCD2"
     columns:
       - name: project_identifier
         tests:
@@ -28,19 +28,12 @@ models:
         tests:
           - not_null
 
-    tests:
-      - dbt_utils.unique_combination_of_columns:
-          combination_of_columns:
-            - project_identifier
-            - entity_identifier
-            - valid_from
-
 
   # =========================
   # ADDRESS
   # =========================
   - name: stg_address
-    description: "Adresse des projets – historisation SCD2"
+    description: "Adresse des projets - historisation SCD2"
     columns:
       - name: project_identifier
         tests:
@@ -54,26 +47,12 @@ models:
         tests:
           - not_null
 
-      - name: valid_from
-        tests:
-          - not_null
-
-      - name: is_current
-        tests:
-          - not_null
-
-    tests:
-      - dbt_utils.unique_combination_of_columns:
-          combination_of_columns:
-            - project_identifier
-            - entity_identifier
-            - valid_from
 
   # =========================
   # INVESTORS
   # =========================
   - name: stg_investors
-    description: "Investisseurs par projet – SCD2"
+    description: "Investisseurs par projet - SCD2"
     columns:
       - name: project_identifier
         tests:
@@ -83,20 +62,5 @@ models:
         tests:
           - not_null
 
-      - name: is_active
-        tests:
-          - not_null
-
-      - name: valid_from
-        tests:
-          - not_null
-
-    tests:
-      - dbt_utils.unique_combination_of_columns:
-          combination_of_columns:
-            - project_identifier
-            - entity_identifier
-            - investor_identifier
-            - valid_from
 
 

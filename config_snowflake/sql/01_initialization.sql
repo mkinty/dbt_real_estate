@@ -1,0 +1,45 @@
+-- Utiliser le rôle admin
+USE ROLE ACCOUNTADMIN;
+
+-- Creer le rôle `transform` 
+CREATE ROLE IF NOT EXISTS transform;
+
+GRANT ROLE TRANSFORM TO ROLE ACCOUNTADMIN;
+
+-- Créer la warehouse par défaut, si nécessaire 
+CREATE WAREHOUSE IF NOT EXISTS COMPUTE_WH;
+
+GRANT OPERATE ON WAREHOUSE COMPUTE_WH TO ROLE TRANSFORM;
+
+-- Créer l'utilisateur DBT et lui assigner le rôle
+CREATE USER IF NOT EXISTS dbt 
+PASSWORD = '****' 
+LOGIN_NAME = 'dbt' 
+MUST_CHANGE_PASSWORD = FALSE 
+DEFAULT_WAREHOUSE = 'COMPUTE_WH' 
+DEFAULT_ROLE = 'transform' 
+DEFAULT_NAMESPACE = 'REALESTATE.RAW' 
+COMMENT = 'Utilisateur DBT pour la transformation des données';
+
+GRANT ROLE TRANSFORM TO USER dbt;
+
+
+
+-- Création de la BDD et du schéma
+CREATE DATABASE IF NOT EXISTS REALESTATE;
+
+-- creation du schema RAW
+CREATE SCHEMA IF NOT EXISTS REALESTATE.RAW;
+
+-- Mise en place des permissions pour le rôle `transform`
+GRANT ALL ON WAREHOUSE COMPUTE_WH TO ROLE transform;
+
+GRANT ALL ON DATABASE REALESTATE to ROLE transform;
+
+GRANT ALL ON ALL SCHEMAS IN DATABASE REALESTATE to ROLE transform;
+
+GRANT ALL ON FUTURE SCHEMAS IN DATABASE REALESTATE to ROLE transform;
+
+GRANT ALL ON ALL TABLES IN SCHEMA REALESTATE.RAW to ROLE transform;
+
+GRANT ALL ON FUTURE TABLES IN SCHEMA REALESTATE.RAW to ROLE transform;

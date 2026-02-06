@@ -14,3 +14,126 @@ sources:
               - dbt_expectations.expect_column_values_to_be_of_type:
                   arguments:
                     column_type: VARIANT
+
+# tests unitaires
+unit_tests:
+  # table scd_projects
+  - name: test_projects_scd2_changes_detection
+    description: >
+      Vérifie que le modèle SCD2 des projets détecte correctement les changements
+      sur project_name, project_start, is_active et phase.
+
+    model: scd_projects
+
+    given:
+      - input: ref('stg_projects')
+        rows:
+          # Version initiale du projet
+          - project_identifier: 2
+            entity_identifier: 1
+            project_name: "Projet 2"
+            project_start: "2025-03-01"
+            is_active: true
+            phase: "phase 1"
+            event_timestamp: "2025-02-01 12:34:00"
+
+          # Même projet, aucune modification → ignoré
+          - project_identifier: 2
+            entity_identifier: 1
+            project_name: "Projet 2"
+            project_start: "2025-03-01"
+            is_active: true
+            phase: "phase 1"
+            event_timestamp: "2025-02-10 09:00:00"
+
+          # Changement de phase → nouvelle version
+          - project_identifier: 2
+            entity_identifier: 1
+            project_name: "Projet 2"
+            project_start: "2025-03-01"
+            is_active: true
+            phase: "phase 2"
+            event_timestamp: "2025-03-01 08:00:00"
+
+    expect:
+      rows:
+        # Version initiale
+        - project_identifier: 2
+          entity_identifier: 1
+          project_name: "Projet 2"
+          project_start: "2025-03-01"
+          is_active: true
+          phase: "phase 1"
+          valid_from: "2025-02-01 12:34:00"
+          valid_to: "2025-03-01 08:00:00"
+
+        # Nouvelle version après changement
+        - project_identifier: 2
+          entity_identifier: 1
+          project_name: "Projet 2"
+          project_start: "2025-03-01"
+          is_active: true
+          phase: "phase 2"
+          valid_from: "2025-03-01 08:00:00"
+          valid_to: null
+
+  # table scd_address
+  - name: test_address_scd2_changes_detection
+    description: >
+      Vérifie que le modèle SCD2 détecte correctement les changements d'adresse
+      et calcule valid_from / valid_to.
+
+    model: scd_address
+
+    given:
+      - input: ref('stg_address')
+        rows:
+          # Première version de l'adresse
+          - project_identifier: 2
+            entity_identifier: 1
+            address_line1: "address line 21"
+            address_line2: "address line 22"
+            address_city: "city 2"
+            address_country: "country 1"
+            event_timestamp: "2025-02-01 12:34:00"
+
+          # Même adresse → pas de changement
+          - project_identifier: 2
+            entity_identifier: 1
+            address_line1: "address line 21"
+            address_line2: "address line 22"
+            address_city: "city 2"
+            address_country: "country 1"
+            event_timestamp: "2025-02-10 10:00:00"
+
+          # Adresse modifiée → changement détecté
+          - project_identifier: 2
+            entity_identifier: 1
+            address_line1: "address line 21"
+            address_line2: "address line 99"
+            address_city: "city 2"
+            address_country: "country 1"
+            event_timestamp: "2025-03-01 08:00:00"
+
+    expect:
+      rows:
+        # Première version conservée jusqu'au changement
+        - project_identifier: 2
+          entity_identifier: 1
+          address_line1: "address line 21"
+          address_line2: "address line 22"
+          address_city: "city 2"
+          address_country: "country 1"
+          valid_from: "2025-02-01 12:34:00"
+          valid_to: "2025-03-01 08:00:00"
+
+        # Nouvelle version après changement
+        - project_identifier: 2
+          entity_identifier: 1
+          address_line1: "address line 21"
+          address_line2: "address line 99"
+          address_city: "city 2"
+          address_country: "country 1"
+          valid_from: "2025-03-01 08:00:00"
+          valid_to: null
+
