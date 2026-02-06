@@ -38,10 +38,16 @@ models:
       - name: project_identifier
         tests:
           - not_null
+          - relationships:
+              field: project_identifier
+              to: ref('stg_projects')
 
       - name: entity_identifier
         tests:
           - not_null
+          - relationships:
+              field: entity_identifier
+              to: ref('stg_projects')
 
       - name: event_timestamp
         tests:
@@ -57,10 +63,16 @@ models:
       - name: project_identifier
         tests:
           - not_null
+          - relationships:
+              field: project_identifier
+              to: ref('stg_projects')
 
       - name: entity_identifier
         tests:
           - not_null
+          - relationships:
+              field: entity_identifier
+              to: ref('stg_projects')
 
 
 
