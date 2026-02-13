@@ -26,20 +26,16 @@ address_with_prev_hash AS (
 scd2_ready AS (
     SELECT
         *,
-        CASE
-            WHEN prev_row_hash = row_hash THEN FALSE
-            ELSE TRUE
-        END AS is_changed
+        event_timestamp AS valid_from,
+        LEAD(event_timestamp) OVER (
+            PARTITION BY project_identifier, entity_identifier
+            ORDER BY event_timestamp
+        ) AS valid_to
     FROM address_with_prev_hash
+    WHERE prev_row_hash IS NULL OR prev_row_hash <> row_hash
 )
 
 SELECT
-    *,
-    event_timestamp AS valid_from,
-    LEAD(event_timestamp) OVER (
-        PARTITION BY project_identifier, entity_identifier
-        ORDER BY event_timestamp
-    ) AS valid_to
+    *
 FROM scd2_ready
-WHERE is_changed = TRUE
 
