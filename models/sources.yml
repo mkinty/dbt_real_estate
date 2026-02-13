@@ -137,3 +137,101 @@ unit_tests:
           valid_from: "2025-03-01 08:00:00"
           valid_to: null
 
+  # table scd_investors
+  - name: test_investors_scd2_changes_and_deletions
+    description: >
+      Vérifie que le modèle SCD2 des investisseurs détecte :
+      - les créations
+      - les modifications
+      - l'absence de changement
+      - la suppression d’un investisseur
+
+    model: scd_investors
+
+    given:
+      - input: ref('stg_investors')
+        rows:
+
+          # =========================
+          # T1 — 2 investisseurs initiaux
+          # =========================
+          - project_identifier: 1
+            entity_identifier: 10
+            investor_identifier: 100
+            investor_name: "Investor A"
+            invested: 1000
+            event_timestamp: "2025-01-01 09:00:00"
+
+          - project_identifier: 1
+            entity_identifier: 10
+            investor_identifier: 200
+            investor_name: "Investor B"
+            invested: 2000
+            event_timestamp: "2025-01-01 09:00:00"
+
+          # =========================
+          # T2 — A modifié, B inchangé
+          # =========================
+          - project_identifier: 1
+            entity_identifier: 10
+            investor_identifier: 100
+            investor_name: "Investor A"
+            invested: 1500   # <-- changement
+            event_timestamp: "2025-02-01 09:00:00"
+
+          - project_identifier: 1
+            entity_identifier: 10
+            investor_identifier: 200
+            investor_name: "Investor B"
+            invested: 2000   # <-- identique
+            event_timestamp: "2025-02-01 09:00:00"
+
+          # =========================
+          # T3 — B supprimé
+          # =========================
+          - project_identifier: 1
+            entity_identifier: 10
+            investor_identifier: 100
+            investor_name: "Investor A"
+            invested: 1500
+            event_timestamp: "2025-03-01 09:00:00"
+
+
+    expect:
+      rows:
+        # Investor A — initial
+        - project_identifier: 1
+          entity_identifier: 10
+          investor_identifier: 100
+          investor_name: "Investor A"
+          invested: 1000
+          valid_from: "2025-01-01 09:00:00"
+          valid_to: "2025-02-01 09:00:00"
+
+        # Investor A — modifié
+        - project_identifier: 1
+          entity_identifier: 10
+          investor_identifier: 100
+          investor_name: "Investor A"
+          invested: 1500
+          valid_from: "2025-02-01 09:00:00"
+          valid_to: null
+
+        # Investor B — version active
+        - project_identifier: 1
+          entity_identifier: 10
+          investor_identifier: 200
+          investor_name: "Investor B"
+          invested: 2000
+          valid_from: "2025-01-01 09:00:00"
+          valid_to: null
+
+        # Investor B — suppression détectée à T3
+        - project_identifier: 1
+          entity_identifier: 10
+          investor_identifier: 200
+          investor_name: "Investor B"
+          invested: 2000
+          valid_from: "2025-03-01 09:00:00"
+          valid_to: "2025-03-01 09:00:00"
+
